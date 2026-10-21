@@ -10,9 +10,12 @@ if [[ ! -f .env ]]; then
   cp .env.example .env
 fi
 npx tsx scripts/build-sim.ts
+# Monitor mode gives the server its own process group, so cleanup reaches the
+# process that is actually listening, not only the tsx wrapper.
+set -m
 npx tsx --env-file=.env apps/server/src/local.ts &
 pid=$!
-trap 'kill "$pid" 2>/dev/null || true' EXIT
+trap 'kill -- -"$pid" 2>/dev/null || kill "$pid" 2>/dev/null || true' EXIT
 health=""
 for _ in 1 2 3 4 5 6 7 8 9 10; do
   if health="$(curl -sf "http://127.0.0.1:${KC_PORT:-8787}/healthz")"; then
