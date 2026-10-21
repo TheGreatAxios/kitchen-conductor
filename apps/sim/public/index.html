@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kitchen Conductor · Alexa+ simulator (unofficial)</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/sim.css">
+  <link rel="stylesheet" href="/card.css">
+</head>
+<body>
+  <p id="offline" hidden>Offline, timers keep running</p>
+  <div id="stage">
+    <div id="bezel">
+      <div id="screen"></div>
+    </div>
+  </div>
+  <form id="say">
+    <label for="utterance">Type what you'd say</label>
+    <input id="utterance" name="utterance" autocomplete="off" placeholder="the turkey's running 30 minutes late">
+    <button type="submit">Send</button>
+    <button type="button" id="mic">Mic</button>
+    <button type="button" id="script">Play script</button>
+    <a href="/voiceover">Voice-over</a>
+  </form>
+  <p id="caption" aria-live="polite"></p>
+  <aside id="drawer" hidden>
+    <p>Demo clock. Press D to hide.</p>
+    <button type="button" id="jump-312">Jump to 3:12</button>
+    <button type="button" id="jump-340">Jump to 3:40</button>
+    <button type="button" id="speed">Speed 1× / 60×</button>
+    <button type="button" id="pause">Pause</button>
+    <button type="button" id="seed">Seed demo</button>
+    <button type="button" id="late">Turkey +30</button>
+    <pre id="log"></pre>
+  </aside>
+  <script type="module" src="/sim.js"></script>
+</body>
+</html>

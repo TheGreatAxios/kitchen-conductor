@@ -1,0 +1,43 @@
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #E3E5E8; color: #1E1B18; font-family: Geist, sans-serif; }
+#offline { margin: 0; padding: 8px 16px; background: #2A1E05; color: #F3EEE6; text-align: center; }
+#stage { display: flex; justify-content: center; padding: 16px 12px 0; overflow: hidden; }
+#bezel {
+  width: 1312px; height: 848px; padding: 16px; border-radius: 34px; background: #0D0C0B;
+  box-shadow: 0 30px 60px -20px rgba(40, 28, 16, .45), 0 8px 18px -8px rgba(40, 28, 16, .35);
+  transform-origin: top center;
+}
+#screen { width: 1280px; height: 800px; }
+#say {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center;
+  margin: 12px auto 0; padding: 0 12px; max-width: 980px;
+}
+#say label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+#utterance {
+  flex: 1 1 280px; height: 44px; border-radius: 22px; border: 1px solid #3A352F;
+  background: #171513; color: #F3EEE6; padding: 0 16px; font: 16px Geist, sans-serif;
+}
+#say button, #say a, #drawer button {
+  height: 44px; border-radius: 22px; border: 1px solid #3A352F; background: #F3EEE6; color: #171513;
+  padding: 0 16px; font: 600 15px Geist, sans-serif; text-decoration: none; display: inline-flex; align-items: center;
+  cursor: pointer;
+}
+#say button:focus-visible, #say a:focus-visible, #utterance:focus-visible, #drawer button:focus-visible {
+  outline: 2px solid #E8B64A; outline-offset: 2px;
+}
+#caption { min-height: 1.4em; text-align: center; margin: 10px 16px 0; color: #2B2621; }
+#drawer {
+  max-width: 720px; margin: 12px auto 24px; padding: 12px 16px; background: #211E1B; color: #F3EEE6;
+  border-radius: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+#drawer[hidden] { display: none; }
+#drawer p { flex: 1 0 100%; margin: 0 0 4px; color: #C9C0B3; }
+#log {
+  flex: 1 0 100%; margin: 8px 0 0; max-height: 160px; overflow: auto; font: 12px ui-monospace, monospace;
+  color: #C9C0B3; white-space: pre-wrap;
+}
+@media (max-width: 720px) {
+  #say { justify-content: stretch; }
+  #say button, #say a { flex: 1 1 auto; justify-content: center; }
+}

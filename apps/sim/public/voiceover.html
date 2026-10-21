@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kitchen Conductor · voice-over</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/sim.css">
+  <style>
+    body { background: #171513; color: #F3EEE6; }
+    main { max-width: 720px; margin: 0 auto; padding: 28px 16px 48px; }
+    h1 { font: 600 36px/1.1 Bricolage, sans-serif; letter-spacing: -0.03em; margin: 0 0 8px; }
+    p.lead { color: #C9C0B3; margin: 0 0 18px; }
+    .row { display: flex; gap: 8px; margin-bottom: 18px; }
+    ol { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+    li { background: #211E1B; border-radius: 14px; padding: 12px 14px; display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; }
+    time { color: #E8B64A; font-weight: 600; }
+    a.back { color: #F3EEE6; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Voice-over</h1>
+    <p class="lead">The browser speaks these lines. Nothing is recorded. A male en-US voice is preferred when the browser has one.</p>
+    <div class="row">
+      <button type="button" id="all">Play all</button>
+      <button type="button" id="stop">Stop</button>
+      <a class="back" href="/">Back to the simulator</a>
+    </div>
+    <ol id="lines"></ol>
+    <p id="caption" aria-live="polite"></p>
+  </main>
+  <script type="module" src="/voiceover.js"></script>
+</body>
+</html>
