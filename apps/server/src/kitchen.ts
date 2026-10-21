@@ -220,7 +220,7 @@ export class Kitchen {
     const ids = new Set(dishes.map((d) => d.id));
     const links = CROSS_LINKS.filter((l) => ids.has(l.dish) && ids.has(l.afterDish));
     const nowClock = clockAt();
-    // Place the meal from 1:00 PM so the 3:12 card matches the mockup. The clock the cook sees stays at 3:12.
+    // Place the meal from 1:00 PM. The clock the cook sees stays at 3:12.
     const now = localMinToEpoch(13 * 60, DEMO_DAY);
     const mealId = input.mealId ?? id();
     const made = schedule({

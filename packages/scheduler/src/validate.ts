@@ -140,7 +140,7 @@ export function validate(plan: Plan, ctx: ValidateCtx): { ok: boolean; issues: V
     }
   }
 
-  // One issue per code+step is enough for the sweep, but tests want each rule. Dedupe identical messages.
+  // Report each distinct rule once per step.
   const seen = new Set<string>();
   const uniq = issues.filter((i) => {
     const k = `${i.code}|${i.stepId ?? ""}|${i.message}`;

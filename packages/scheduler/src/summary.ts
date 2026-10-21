@@ -11,7 +11,7 @@ function cap(s: string): string {
   return s.slice(0, 1).toUpperCase() + s.slice(1);
 }
 
-/** One sentence. The turkey +30 demo lands on the fixture line when the sides actually move. */
+/** One sentence: which dish ran long, what moved later, and whether the rest got shorter. */
 export function summarize(prev: Plan | undefined, next: Plan, shift?: { dish: string; deltaMin: number }): string {
   if (!shift || shift.deltaMin <= 0) {
     if (prev && next.serveAt !== prev.serveAt) {
