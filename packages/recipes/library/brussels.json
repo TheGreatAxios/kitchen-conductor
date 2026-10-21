@@ -1,0 +1,18 @@
+{
+  "id": "brussels",
+  "name": "Brussels sprouts",
+  "shortName": "brussels",
+  "aliases": ["brussels sprouts", "sprouts"],
+  "glaze": "#1F6F78",
+  "fg": "#F2FBFC",
+  "servings": 8,
+  "summaryOrder": 7,
+  "ingredients": [
+    { "item": "brussels sprouts", "quantity": "2 lb" },
+    { "item": "oil", "quantity": "2 tbsp", "pantry": true }
+  ],
+  "steps": [
+    { "key": "prep", "name": "Trim", "detail": "Trim", "kind": "prep", "minutes": 10, "hands": 1 },
+    { "key": "roast", "name": "Roast", "detail": "Roast", "kind": "oven", "minutes": 25, "ovenTempF": 400, "tempFlexible": true, "hands": 0, "holdMin": 30, "after": [{ "key": "prep", "lagMin": 0 }] }
+  ]
+}

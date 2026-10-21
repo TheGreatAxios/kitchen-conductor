@@ -1,0 +1,52 @@
+{
+  "id": "turkey",
+  "name": "Turkey",
+  "shortName": "turkey",
+  "aliases": ["bird", "roast turkey", "the bird"],
+  "glaze": "#B9441F",
+  "fg": "#FFF4EC",
+  "servings": 8,
+  "summaryOrder": 0,
+  "ingredients": [
+    { "item": "turkey", "quantity": "12 lb" },
+    { "item": "salt", "quantity": "2 tbsp", "pantry": true },
+    { "item": "pepper", "quantity": "1 tbsp", "pantry": true },
+    { "item": "butter", "quantity": "4 tbsp" }
+  ],
+  "steps": [
+    {
+      "key": "roast",
+      "name": "Roast",
+      "detail": "Roast · 12 lb",
+      "kind": "oven",
+      "minutes": 150,
+      "minMinutes": 150,
+      "maxMinutes": 240,
+      "ovenTempF": 350,
+      "tempFlexible": false,
+      "hands": 0,
+      "handsAt": [{ "key": "baste", "name": "Baste", "offsetMin": 120, "minutes": 5, "hands": 1 }]
+    },
+    {
+      "key": "rest",
+      "name": "Rest",
+      "detail": "Rest · 30 min",
+      "kind": "rest",
+      "minutes": 30,
+      "minMinutes": 20,
+      "maxMinutes": 30,
+      "hands": 0,
+      "after": [{ "key": "roast", "lagMin": 0 }]
+    },
+    {
+      "key": "carve",
+      "name": "Carve",
+      "detail": "Carve",
+      "kind": "prep",
+      "minutes": 15,
+      "hands": 2,
+      "holdMin": 15,
+      "after": [{ "key": "rest", "lagMin": 0 }]
+    }
+  ]
+}

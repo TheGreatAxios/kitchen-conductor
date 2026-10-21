@@ -1,0 +1,18 @@
+{
+  "id": "gravy",
+  "name": "Gravy",
+  "shortName": "gravy",
+  "aliases": ["pan gravy", "the gravy"],
+  "glaze": "#8E2A37",
+  "fg": "#FBEDEF",
+  "servings": 8,
+  "summaryOrder": 2,
+  "ingredients": [
+    { "item": "drippings", "quantity": "from the turkey", "pantry": true },
+    { "item": "flour", "quantity": "1/4 cup", "pantry": true },
+    { "item": "chicken stock", "quantity": "2 cups" }
+  ],
+  "steps": [
+    { "key": "simmer", "name": "Simmer", "detail": "Simmer", "kind": "stovetop", "minutes": 20, "hands": 0, "holdMin": 20 }
+  ]
+}

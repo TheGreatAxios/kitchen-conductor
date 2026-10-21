@@ -1,0 +1,20 @@
+{
+  "id": "potatoes",
+  "name": "Potatoes",
+  "shortName": "potatoes",
+  "aliases": ["mashed potatoes", "potato", "spuds", "mash"],
+  "glaze": "#E9DFC9",
+  "fg": "#2A241B",
+  "servings": 8,
+  "summaryOrder": 1,
+  "ingredients": [
+    { "item": "potatoes", "quantity": "5 lb" },
+    { "item": "butter", "quantity": "4 tbsp" },
+    { "item": "salt", "quantity": "1 tsp", "pantry": true }
+  ],
+  "steps": [
+    { "key": "peel", "name": "Peel", "detail": "Peel", "kind": "prep", "minutes": 15, "hands": 2 },
+    { "key": "boil", "name": "Boil", "detail": "Boil", "kind": "stovetop", "minutes": 25, "hands": 0, "after": [{ "key": "peel", "lagMin": 10 }] },
+    { "key": "mash", "name": "Mash", "detail": "Mash", "kind": "prep", "minutes": 10, "hands": 2, "holdMin": 30, "after": [{ "key": "boil", "lagMin": 5 }] }
+  ]
+}

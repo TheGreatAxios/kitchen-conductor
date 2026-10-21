@@ -1,0 +1,16 @@
+{
+  "name": "@kc/recipes",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1154.0",
+    "@kc/core": "*",
+    "zod": "^4.6.7"
+  }
+}

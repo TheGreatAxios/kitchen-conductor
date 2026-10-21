@@ -1,0 +1,18 @@
+{
+  "id": "pie",
+  "name": "Pumpkin pie",
+  "shortName": "pie",
+  "aliases": ["pumpkin pie", "pumpkin"],
+  "glaze": "#5B3A6B",
+  "fg": "#F7F0FA",
+  "servings": 8,
+  "summaryOrder": 6,
+  "ingredients": [
+    { "item": "pumpkin puree", "quantity": "15 oz" },
+    { "item": "pie crust", "quantity": "1" }
+  ],
+  "steps": [
+    { "key": "prep", "name": "Fill the crust", "detail": "Fill the crust", "kind": "prep", "minutes": 15, "hands": 1 },
+    { "key": "bake", "name": "Bake", "detail": "Bake · 425°", "kind": "oven", "minutes": 45, "ovenTempF": 425, "tempFlexible": false, "hands": 0, "holdMin": 180, "after": [{ "key": "prep", "lagMin": 0 }] }
+  ]
+}

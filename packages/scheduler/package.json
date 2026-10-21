@@ -1,0 +1,17 @@
+{
+  "name": "@kc/scheduler",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@kc/core": "*"
+  },
+  "devDependencies": {
+    "@kc/recipes": "*"
+  }
+}

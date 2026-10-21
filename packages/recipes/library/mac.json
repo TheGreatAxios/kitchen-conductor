@@ -1,0 +1,18 @@
+{
+  "id": "mac",
+  "name": "Mac and cheese",
+  "shortName": "mac",
+  "aliases": ["mac and cheese", "macaroni"],
+  "glaze": "#8A5A2B",
+  "fg": "#FFF6EC",
+  "servings": 8,
+  "summaryOrder": 8,
+  "ingredients": [
+    { "item": "macaroni", "quantity": "1 lb" },
+    { "item": "cheddar", "quantity": "12 oz" }
+  ],
+  "steps": [
+    { "key": "sauce", "name": "Make the sauce", "detail": "Sauce", "kind": "stovetop", "minutes": 15, "hands": 1 },
+    { "key": "bake", "name": "Bake", "detail": "Bake", "kind": "oven", "minutes": 25, "ovenTempF": 350, "tempFlexible": true, "hands": 0, "holdMin": 40, "after": [{ "key": "sauce", "lagMin": 0 }] }
+  ]
+}

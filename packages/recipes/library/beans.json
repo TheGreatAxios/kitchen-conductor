@@ -1,0 +1,18 @@
+{
+  "id": "beans",
+  "name": "Green beans",
+  "shortName": "beans",
+  "aliases": ["green beans", "green bean"],
+  "glaze": "#55712F",
+  "fg": "#F3F7EC",
+  "servings": 8,
+  "summaryOrder": 3,
+  "ingredients": [
+    { "item": "green beans", "quantity": "2 lb" },
+    { "item": "butter", "quantity": "2 tbsp" },
+    { "item": "salt", "quantity": "1 tsp", "pantry": true }
+  ],
+  "steps": [
+    { "key": "cook", "name": "Blanch + sauté", "detail": "Blanch + sauté", "kind": "stovetop", "minutes": 15, "hands": 0, "holdMin": 10 }
+  ]
+}

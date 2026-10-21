@@ -1,0 +1,17 @@
+{
+  "id": "rolls",
+  "name": "Rolls",
+  "shortName": "rolls",
+  "aliases": ["dinner rolls", "roll"],
+  "glaze": "#2F5CA6",
+  "fg": "#EEF3FC",
+  "servings": 8,
+  "summaryOrder": 4,
+  "ingredients": [
+    { "item": "dinner rolls", "quantity": "18" },
+    { "item": "butter", "quantity": "2 tbsp" }
+  ],
+  "steps": [
+    { "key": "bake", "name": "Bake", "detail": "Bake · 425°", "kind": "oven", "minutes": 15, "ovenTempF": 425, "tempFlexible": false, "hands": 0, "holdMin": 20 }
+  ]
+}

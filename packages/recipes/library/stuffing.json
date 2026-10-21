@@ -1,0 +1,44 @@
+{
+  "id": "stuffing",
+  "name": "Stuffing",
+  "shortName": "stuffing",
+  "aliases": ["dressing", "bread stuffing"],
+  "glaze": "#D49A1E",
+  "fg": "#231A06",
+  "servings": 8,
+  "summaryOrder": 5,
+  "ingredients": [
+    { "item": "bread", "quantity": "1 lb" },
+    { "item": "sage", "quantity": "2 tbsp" },
+    { "item": "onion", "quantity": "1" },
+    { "item": "chicken stock", "quantity": "2 cups" },
+    { "item": "butter", "quantity": "4 tbsp" }
+  ],
+  "steps": [
+    { "key": "prep", "name": "Prep stuffing", "detail": "Prep stuffing", "kind": "prep", "minutes": 20, "hands": 2 },
+    {
+      "key": "bake",
+      "name": "Bake",
+      "detail": "Bake",
+      "kind": "oven",
+      "minutes": 40,
+      "ovenTempF": 375,
+      "tempFlexible": true,
+      "hands": 0,
+      "after": [{ "key": "prep", "lagMin": 0 }]
+    },
+    {
+      "key": "hold",
+      "name": "Hold under foil",
+      "detail": "Hold under foil",
+      "kind": "hold",
+      "minutes": 45,
+      "minMinutes": 0,
+      "maxMinutes": 90,
+      "hands": 0,
+      "holdMin": 90,
+      "spanToServe": true,
+      "after": [{ "key": "bake", "lagMin": 0 }]
+    }
+  ]
+}

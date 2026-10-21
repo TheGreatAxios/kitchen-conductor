@@ -1,0 +1,26 @@
+{
+  "name": "kitchen-conductor",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "build": "tsx scripts/build-sim.ts",
+    "test": "npm test --workspaces --if-present",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "secret-scan": "bash scripts/secret-scan.sh"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "22.19.20",
+    "esbuild": "0.25.12",
+    "eslint": "^9.39.5",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.46.2",
+    "vitest": "3.2.4"
+  }
+}
