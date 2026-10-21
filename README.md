@@ -4,6 +4,10 @@ Kitchen Conductor turns the dishes and a serve time into one cooking timeline. O
 
 ![The Thanksgiving timeline at 3:12, with stuffing about to go into a 350° oven](docs/simulator.png)
 
+## Requirements
+
+Node 22+, and npm.
+
 ## Quick start
 
 ```bash
@@ -19,6 +23,10 @@ npx tsx scripts/seed-demo.ts
 ```
 
 Play script speaks the cook's lines in the browser. The narration is at http://127.0.0.1:8787/voiceover. Press D for the demo clock.
+
+## Project layout
+
+`packages/scheduler` places the meal. `packages/recipes` is the dish library and the one recipe parse. `packages/core` is the shared meal model. `apps/server` is the MCP server. `apps/card` draws the timeline. `apps/sim` is the browser.
 
 ## How it works
 

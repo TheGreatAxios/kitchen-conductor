@@ -2,6 +2,9 @@
   "name": "kitchen-conductor",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "workspaces": [
     "packages/*",
     "apps/*"
