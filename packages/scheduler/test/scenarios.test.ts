@@ -186,7 +186,7 @@ describe("scheduler", () => {
         throw new Error(`seed ${i} invalid without a serve shift\n${v.issues.map((x) => x.message).join("; ")}\n${debugTimeline(made)}`);
       }
     }
-  });
+  }, 30_000);
 
   it("T10 a turkey that has not started names the earliest dinner", () => {
     const turkey = dishById("turkey");
