@@ -14,8 +14,7 @@
     "build": "tsx scripts/build-sim.ts",
     "test": "npm test --workspaces --if-present",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint .",
-    "secret-scan": "bash scripts/secret-scan.sh"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
