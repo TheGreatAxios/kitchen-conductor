@@ -27,7 +27,7 @@ async function main(): Promise<void> {
   const started = Date.now();
   const res = await client.send(buildParseCommand(FIXTURES, modelId));
   const text = (res.output?.message?.content ?? []).map((part) => ("text" in part ? part.text ?? "" : "")).join("");
-  let dishes = 0;
+  let dishes: number;
   try {
     dishes = (JSON.parse(text) as { dishes?: unknown[] }).dishes?.length ?? 0;
   } catch {

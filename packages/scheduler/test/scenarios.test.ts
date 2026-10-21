@@ -178,7 +178,7 @@ describe("scheduler", () => {
       try {
         made = plan({ mealId: `r${i}`, dishes: picked, links: CROSS_LINKS, serveAt: serve, now, day: DAY, cooks: rand() > 0.8 ? 2 : 1 });
       } catch (err) {
-        throw new Error(`seed ${i} threw ${err}`);
+        throw new Error(`seed ${i} threw ${err}`, { cause: err });
       }
       const v = validate(made, { now, racks: made.racks, burners: made.burners, cooks: made.cooks });
       const shifted = made.options.some((o) => o.id === "move_serve_time") || made.serveAt !== serve;

@@ -18,13 +18,13 @@
     "secret-scan": "bash scripts/secret-scan.sh"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "@types/node": "22.19.20",
-    "esbuild": "0.25.12",
-    "eslint": "^9.39.5",
-    "tsx": "4.20.6",
-    "typescript": "5.9.3",
-    "typescript-eslint": "^8.46.2",
-    "vitest": "3.2.4"
+    "@eslint/js": "^10.0.1",
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "eslint": "^10.13.0",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "5.0.5"
   }
 }
