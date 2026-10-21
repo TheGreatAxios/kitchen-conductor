@@ -6,7 +6,7 @@ Kitchen Conductor turns the dishes and a serve time into one cooking timeline. O
 
 ## Requirements
 
-Node 22+, and npm.
+Node 24 LTS, and npm.
 
 ## Quick start
 
