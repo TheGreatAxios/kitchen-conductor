@@ -19,6 +19,55 @@ function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
+function lightInk(hex: string): boolean {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return false;
+  const r = Number.parseInt(h.slice(0, 2), 16);
+  const g = Number.parseInt(h.slice(2, 4), 16);
+  const b = Number.parseInt(h.slice(4, 6), 16);
+  if ([r, g, b].some((n) => Number.isNaN(n))) return false;
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 180;
+}
+
+function textPx(text: string, fontPx: number): number {
+  return Math.ceil([...text].length * fontPx * 0.52);
+}
+
+function labelChoices(dish: string, stepName: string, detail: string): string[] {
+  const full = (detail && detail !== stepName ? detail : stepName).trim();
+  const head = (full.split("·")[0] ?? full).trim();
+  const dishWords = new Set(dish.toLowerCase().split(/\s+/));
+  const verb = head.split(/\s+/).filter((w) => !dishWords.has(w.toLowerCase())).join(" ") || head;
+  const verbWords = verb.split(/\s+/).filter(Boolean);
+  const verbFirst = verbWords[0] ?? verb;
+  const dishLast = dish.split(/\s+/).at(-1) ?? dish;
+  const long = [`${dish} ${full}`, `${dish} ${head}`, `${dish} ${verb}`];
+  const short = verbWords.length === 1 ? [verb, dish] : [dish, verbFirst, dishLast];
+  const out = [...long, ...short];
+  return [...new Set(out.map((s) => s.replace(/\s+/g, " ").trim()).filter(Boolean))];
+}
+
+function paintLabel(label: string, dish: string): string {
+  if (label === dish) return `<b>${esc(dish)}</b>`;
+  if (label.startsWith(`${dish} `)) return `<b>${esc(dish)}</b> ${esc(label.slice(dish.length + 1))}`;
+  return esc(label);
+}
+
+/** Longest label that fits the block. The note sits beside it, never on top of it. */
+export function fitBarLabel(dish: string, stepName: string, detail: string, note: string, room: number, fontPx: number): { label: string; note: string } {
+  const choices = labelChoices(dish, stepName, detail);
+  const noteW = note ? textPx(note, 12) + 8 : 0;
+  if (note) {
+    for (const label of choices) {
+      if (textPx(label, fontPx) + noteW <= room) return { label, note };
+    }
+  }
+  for (const label of choices) {
+    if (textPx(label, fontPx) <= room) return { label, note: "" };
+  }
+  return { label: "", note: "" };
+}
+
 function attrs(tool?: string, args?: Record<string, unknown>): string {
   if (!tool) return "";
   return ` data-tool="${esc(tool)}" data-args="${encodeURIComponent(JSON.stringify(args ?? {}))}"`;
@@ -73,6 +122,8 @@ function timeline(view: PlanView): string {
   let bars = "";
   const handsBusy: { lane: string; a: number; b: number }[] = [];
   const steps = [...view.steps].filter((s) => s.status !== "skipped").sort((a, b) => a.startAt - b.startAt);
+  type Placed = { lane: string; l: number; r: number; ly: number; lh: number; step: (typeof steps)[number]; g: { glaze: string; fg: string; name: string }; old?: { startAt: number; endAt: number } };
+  const placed: Placed[] = [];
   for (const s of steps) {
     const a = epochToLocalMin(s.startAt, view.day);
     const b = epochToLocalMin(s.endAt, view.day);
@@ -94,31 +145,52 @@ function timeline(view: PlanView): string {
         places.push(lane);
       }
     }
-    places.forEach((lane, i) => {
+    for (const lane of places) {
       const pos = yOf.get(lane);
-      if (!pos) return;
+      if (!pos) continue;
       const [ly, lh] = pos;
-      if (old) {
-        const oa = epochToLocalMin(old.startAt, view.day);
-        const ob = epochToLocalMin(old.endAt, view.day);
-        if (oa !== a || ob !== b) {
-          const l = Math.max(0, x(oa));
-          const r = Math.min(GRID, x(ob));
-          if (r - l > 2) bars += `<div class="ghost" style="left:${l}px;top:${ly}px;width:${r - l}px;height:${lh - 4}px"></div>`;
-        }
-      }
       const l = Math.max(0, x(a));
       const r = Math.min(GRID, x(b));
-      if (r - l < 2) return;
-      const deltaMin = old ? Math.round((s.startAt - old.startAt) / 60_000) || Math.round((s.endAt - old.endAt) / 60_000) : 0;
-      const text = i === 0 && r - l > 70
-        ? `<span class="bt"><b>${esc(g.name)}</b> ${esc(s.detail && s.detail !== s.name ? s.detail : s.name)}</span>`
-        : "";
-      const delta = deltaMin ? `<i class="delta">${deltaMin > 0 ? "+" : ""}${deltaMin}</i>` : "";
-      const note = !delta && s.adjustedNote && r - l > 160 ? `<i class="note">${esc(s.adjustedNote)}</i>` : "";
-      const cls = ["bar", lane.startsWith("h") || lane === "rest" || lane.startsWith("b") ? "thin" : "", s.endAt <= view.now ? "done" : "", s.startAt <= view.now && s.endAt > view.now ? "live" : "", x(a) < 0 ? "clip" : ""].filter(Boolean).join(" ");
-      bars += `<div class="${cls}" style="left:${l}px;top:${ly}px;width:${r - l}px;height:${lh - 4}px;--g:${g.glaze};--f:${g.fg}">${text}${delta}${note}</div>`;
-    });
+      if (r - l < 2) continue;
+      placed.push({ lane, l, r, ly, lh, step: s, g, old });
+    }
+  }
+  for (const block of placed) {
+    const { lane, l, r, ly, lh, step: s, g, old } = block;
+    if (old) {
+      const oa = epochToLocalMin(old.startAt, view.day);
+      const ob = epochToLocalMin(old.endAt, view.day);
+      const a = epochToLocalMin(s.startAt, view.day);
+      const b = epochToLocalMin(s.endAt, view.day);
+      if (oa !== a || ob !== b) {
+        const gl = Math.max(0, x(oa));
+        const gr = Math.min(GRID, x(ob));
+        if (gr - gl > 2) bars += `<div class="ghost" style="left:${gl}px;top:${ly}px;width:${gr - gl}px;height:${lh - 4}px"></div>`;
+      }
+    }
+    const next = placed.find((p) => p.lane === lane && p.l >= r - 0.5 && p !== block);
+    const gap = Math.max(0, (next ? next.l : GRID) - r);
+    const width = r - l;
+    const thin = lane.startsWith("h") || lane === "rest" || lane.startsWith("b");
+    const fontPx = thin ? 13 : 15;
+    const deltaMin = old ? Math.round((s.startAt - old.startAt) / 60_000) || Math.round((s.endAt - old.endAt) / 60_000) : 0;
+    const pad = (thin ? 8 : 12) + (deltaMin ? 28 : 0);
+    const dish = g.name;
+    const detail = s.detail || s.name;
+    const fullNote = s.adjustedNote ?? "";
+    const title = [dish, detail, fullNote].filter(Boolean).join(" · ");
+    let fit = fitBarLabel(dish, s.name, detail, deltaMin ? "" : fullNote, Math.max(0, width - pad), fontPx);
+    let spill = false;
+    if (!fit.label && lightInk(g.fg) && gap > 28) {
+      fit = fitBarLabel(dish, s.name, detail, "", Math.max(0, width + gap - 8), fontPx);
+      spill = Boolean(fit.label);
+    }
+    const text = fit.label ? `<span class="bt">${paintLabel(fit.label, dish)}</span>` : "";
+    const delta = deltaMin ? `<i class="delta">${deltaMin > 0 ? "+" : ""}${deltaMin}</i>` : "";
+    const note = fit.note ? `<i class="note">${esc(fit.note)}</i>` : "";
+    const clipped = x(epochToLocalMin(s.startAt, view.day)) < 0;
+    const cls = ["bar", thin ? "thin" : "", spill ? "spill" : "", deltaMin ? "has-delta" : "", s.endAt <= view.now ? "done" : "", s.startAt <= view.now && s.endAt > view.now ? "live" : "", clipped ? "clip" : ""].filter(Boolean).join(" ");
+    bars += `<div class="${cls}" title="${esc(title)}" style="left:${l}px;top:${ly}px;width:${width}px;height:${lh - 4}px;--g:${g.glaze};--f:${g.fg}">${text}${note}${delta}</div>`;
   }
   const [ty, th] = yOf.get("temp") ?? [0, 28];
   for (const p of view.ovenPhases) {

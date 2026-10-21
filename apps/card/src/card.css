@@ -34,14 +34,18 @@
 .kc-screen .well.heatwell{background:#1F1A16}
 .kc-screen .tick{position:absolute;top:0;width:1px;background:var(--seam);opacity:.7}
 .kc-screen .tick span{position:absolute;top:-18px;left:-14px;font-size:13px;color:var(--ink3);white-space:nowrap}
-.kc-screen .bar{position:absolute;background:var(--g);color:var(--f);border-radius:6px;display:flex;align-items:center;padding:0 10px;overflow:hidden;white-space:nowrap;font-size:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.18);transition:left 400ms ease,width 400ms ease,top 400ms ease}
-.kc-screen .bar.thin{font-size:14px}
+.kc-screen .bar{position:absolute;background:var(--g);color:var(--f);border-radius:6px;display:flex;align-items:center;gap:8px;padding:0 6px;overflow:hidden;white-space:nowrap;font-size:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.18);transition:left 400ms ease,width 400ms ease,top 400ms ease}
+.kc-screen .bar .bt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kc-screen .bar.thin{font-size:13px;padding:0 4px}
+.kc-screen .bar.spill{overflow:visible;z-index:2}
+.kc-screen .bar.spill .bt{overflow:visible;text-overflow:clip}
+.kc-screen .bar.has-delta{padding-right:32px}
 .kc-screen .bar b{font-weight:600}
 .kc-screen .bar.clip{border-top-left-radius:0;border-bottom-left-radius:0}
 .kc-screen .bar.done{filter:saturate(.35) brightness(.6)}
 .kc-screen .bar.live{outline:2px solid var(--ink);outline-offset:1px}
 .kc-screen .delta{position:absolute;right:6px;font-style:normal;font:600 12px Geist,sans-serif;background:var(--amber);color:#2A1E05;padding:2px 6px;border-radius:10px}
-.kc-screen .note{position:absolute;right:8px;font-style:normal;font-size:12px;opacity:.85}
+.kc-screen .note{flex:none;margin-left:auto;font-style:normal;font-size:12px;opacity:.9;white-space:nowrap}
 .kc-screen .ghost{position:absolute;border:1.5px dashed rgba(243,238,230,.32);border-radius:6px}
 .kc-screen .heat{position:absolute;border-radius:6px;display:flex;align-items:center;padding:0 10px;font:600 14px Geist,sans-serif}
 .kc-screen .heat.warm{background:linear-gradient(90deg,#B4552D,#C9672F)}
