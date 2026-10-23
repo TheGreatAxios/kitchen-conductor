@@ -6,7 +6,7 @@ Kitchen Conductor turns the dishes and a serve time into one cooking timeline. O
 
 ## Requirements
 
-Node 24 LTS, and npm.
+Node 24 LTS or newer, and npm. Tested on Node 24.22.1 and 26.12.1.
 
 ## Quick start
 
@@ -32,7 +32,7 @@ Play script speaks the cook's lines in the browser. The narration is at http://1
 
 The scheduler places the meal backward from the time you eat. The oven holds one temperature at a time. A step that can share that temperature, within 50°F, does, and its minutes are adjusted onto a five-minute grid. Preheat and temperature changes stay empty. Burners and hands are placed around that.
 
-The MCP server speaks protocol 2025-11-25 over Streamable HTTP at `/mcp`. The timeline is the resource `ui://kitchen-conductor/timeline.html`. The simulator is an MCP client: a chip or a spoken line becomes `tools/call`.
+The MCP server speaks protocol 2026-07-28 over Streamable HTTP at `/mcp`: stateless, with no `initialize` handshake, and `server/discover` for version selection. Clients on 2025-11-25 are still served through the SDK's stateless fallback. The timeline is the resource `ui://kitchen-conductor/timeline.html`. The simulator is an MCP client: a chip or a spoken line becomes `tools/call`.
 
 Dishes in the library are scheduled with no model call. A recipe that is not in the library goes through one [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/) Converse call to `us.anthropic.claude-haiku-4-5-20251001-v1:0` in `us-east-1`. The reply is checked in code and kept. It is never sent back to a model. Phrases are routed by a grammar.
 

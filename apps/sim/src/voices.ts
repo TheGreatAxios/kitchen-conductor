@@ -48,7 +48,7 @@ export const NARRATION: { cue: string; say: string }[] = [
   { cue: "2:05", say: "Missing ingredients go straight to your list." },
   {
     cue: "2:20",
-    say: "Under the hood it's a self-hosted MCP server on the 2025-11-25 spec, over Streamable HTTP, in one local process. Bedrock reads a new recipe once. The scheduling is plain code.",
+    say: "Under the hood it's a self-hosted MCP server on the 2026-07-28 spec, over Streamable HTTP, in one local process. Bedrock reads a new recipe once. The scheduling is plain code.",
   },
   { cue: "2:40", say: "Kitchen Conductor. Dinner, on time." },
 ];

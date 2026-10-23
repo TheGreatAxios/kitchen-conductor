@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Hono } from "hono";
-import { McpServer, WebStandardStreamableHTTPServerTransport, originValidationResponse } from "@modelcontextprotocol/server";
+import { createMcpHandler, originValidationResponse } from "@modelcontextprotocol/server";
 import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
 import type { BedrockSender } from "@kc/recipes";
 import { MODEL_ID } from "@kc/recipes";
@@ -56,6 +56,7 @@ export function createApp(opts: AppOpts = {}): Hono {
   const bedrock = "bedrock" in opts ? opts.bedrock ?? null : bedrockFromEnv();
   const kitchen = new Kitchen(store, bedrock);
   const html = renderDocument(homeModel(), cardCss);
+  const mcp = createMcpHandler(() => buildServer(kitchen, html));
   const app = new Hono();
 
   app.get("/healthz", (c) => c.json({ ok: true, store: "memory", voice: "browser", region: "us-east-1", model: MODEL_ID, bedrock: bedrock ? "live" : "stub" }));
@@ -63,10 +64,7 @@ export function createApp(opts: AppOpts = {}): Hono {
   app.all("/mcp", async (c) => {
     const rejected = originValidationResponse(c.req.raw, allowlist());
     if (rejected) return rejected;
-    const mcp: McpServer = buildServer(kitchen, html);
-    const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
-    await mcp.connect(transport);
-    return transport.handleRequest(c.req.raw);
+    return mcp.fetch(c.req.raw);
   });
 
   app.post("/sim/seed", async (c) => {

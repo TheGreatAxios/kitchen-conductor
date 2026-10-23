@@ -111,7 +111,7 @@ function chime(): void {
   osc.stop(ctx.currentTime + 0.4);
 }
 
-const client = new Client({ name: "kitchen-conductor-sim", version: "1.0.0" });
+const client = new Client({ name: "kitchen-conductor-sim", version: "1.0.0" }, { versionNegotiation: { mode: "auto" } });
 const transport = new StreamableHTTPClientTransport(new URL("/mcp", location.origin), {
   fetch: async (input, init) => {
     const body = typeof init?.body === "string" ? init.body : "";

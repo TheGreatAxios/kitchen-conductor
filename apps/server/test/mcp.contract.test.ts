@@ -16,6 +16,10 @@ function base(): string {
   return `http://127.0.0.1:${port}`;
 }
 
+function modernClient(name: string): Client {
+  return new Client({ name, version: "0.0.0" }, { versionNegotiation: { mode: { pin: "2026-07-28" } } });
+}
+
 async function tool(client: Client, name: string, args: Record<string, unknown>) {
   return client.callTool({ name, arguments: args }) as Promise<{
     isError?: boolean;
@@ -38,10 +42,10 @@ beforeAll(async () => {
 afterAll(() => close?.());
 
 describe("mcp contract", () => {
-  it("speaks 2025-11-25, lists 11 tools, and refuses a foreign origin", async () => {
-    const client = new Client({ name: "kc-test", version: "0.0.0" });
+  it("speaks 2026-07-28, lists 11 tools, and refuses a foreign origin", async () => {
+    const client = modernClient("kc-test");
     await client.connect(new StreamableHTTPClientTransport(new URL("/mcp", base())));
-    expect(client.getNegotiatedProtocolVersion()).toBe("2025-11-25");
+    expect(client.getNegotiatedProtocolVersion()).toBe("2026-07-28");
     const listed = await client.listTools();
     expect(listed.tools.map((t) => t.name).sort()).toEqual([
       "add_missing_to_list", "choose_option", "get_list", "mark_done", "plan_meal",
@@ -63,8 +67,17 @@ describe("mcp contract", () => {
     expect(evil.status).toBe(403);
   });
 
+  it("still serves a 2025-11-25 client without the per-request envelope", async () => {
+    const client = new Client({ name: "kc-legacy", version: "0.0.0" });
+    await client.connect(new StreamableHTTPClientTransport(new URL("/mcp", base())));
+    expect(client.getNegotiatedProtocolVersion()).toBe("2025-11-25");
+    const listed = await client.listTools();
+    expect(listed.tools).toHaveLength(11);
+    await client.close();
+  });
+
   it("runs the demo through tools/call with the stub", async () => {
-    const client = new Client({ name: "kc-demo", version: "0.0.0" });
+    const client = modernClient("kc-demo");
     await client.connect(new StreamableHTTPClientTransport(new URL("/mcp", base())));
     const planned = await tool(client, "plan_meal", {
       dishes: ["turkey", "stuffing", "potatoes", "green beans", "gravy", "rolls"].map((name) => ({ name })),
