@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { epochToLocalMin, hm, localMinToEpoch, type RecipeDish } from "@kc/core";
+import { buildView, epochToLocalMin, hm, localMinToEpoch, type RecipeDish } from "@kc/core";
 import { CROSS_LINKS, parseRecipes, thanksgivingDishes, type BedrockSender } from "@kc/recipes";
 import { debugTimeline, plan, replan, validate } from "../src/index.js";
 
@@ -120,9 +120,9 @@ describe("pasted recipes", () => {
   it("still move with dinner once one of their steps is done", async () => {
     const dishes = (await pasted()).filter((d) => d.id === "glazed-carrots");
     const first = plan(request(dishes));
-    const step = first.steps.find((s) => s.dishId === "glazed-carrots" && s.startAt >= at(15, 40));
+    const step = first.steps.find((s) => s.dishId === "glazed-carrots" && s.hands > 0 && s.startAt >= at(15, 40));
     expect(step, debugTimeline(first)).toBeTruthy();
-    const now = step!.startAt + 2 * 60_000;
+    const now = step!.startAt;
     const { plan: done } = replan(first, { type: "mark_done", stepId: step!.id }, now);
     const { plan: late } = replan(done, { type: "shift", target: "turkey", deltaMin: 30 }, now);
     const v = validate(late, { now, racks: 2, burners: 4, cooks: 1 });
@@ -130,6 +130,8 @@ describe("pasted recipes", () => {
     const serve = epochToLocalMin(late.serveAt, DAY);
     expect(serve).toBeGreaterThan(hm(17, 0));
     expect(late.options.map((o) => o.id)).toContain("move_serve_time");
+    const view = buildView(late, now, { title: "Thanksgiving", glazes: [], clock: { mode: "real" } });
+    expect(view.upNext.map((b) => b.label)).not.toContain(step!.name);
     const [, end] = window(late, "glazed-carrots");
     expect(end, debugTimeline(late)).toBeLessThanOrEqual(serve);
     expect(end).toBeGreaterThan(serve - 45);

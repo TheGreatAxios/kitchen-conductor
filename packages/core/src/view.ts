@@ -36,7 +36,7 @@ interface Beat {
 function beats(plan: Plan, now: number): Beat[] {
   const out: Beat[] = [];
   for (const s of plan.steps) {
-    if (s.status === "skipped" || s.kind === "hold") continue;
+    if (s.status === "skipped" || s.status === "done" || s.kind === "hold") continue;
     if (s.hands > 0 && s.startAt > now - 1000) {
       const name = s.name.toLowerCase().startsWith(dishOf(s).toLowerCase()) ? s.name : `${s.name}`;
       out.push({ at: s.startAt, label: name, hint: handsHint(s.hands), stepId: s.id });
