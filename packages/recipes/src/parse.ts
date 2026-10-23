@@ -93,7 +93,10 @@ function fromRaw(raw: RawDish, index: number): { dish: RecipeDish; warning?: str
     if (minutes < 1 || minutes > 720) return fallback(name, "I couldn't read that recipe.");
     const temp = s.ovenTempF ?? undefined;
     if (temp != null && (temp < 150 || temp > 550)) return fallback(name, "I couldn't read that recipe.");
-    const after = (s.after ?? []).filter((k) => k !== s.key && keys.has(k)).map((key) => ({ key, lagMin: 0 }));
+    const listed = (s.after ?? []).filter((k) => k !== s.key && keys.has(k));
+    const prev = mapped[mapped.length - 1];
+    const chain = listed.length === 0 && prev != null && !(prev.after ?? []).some((a) => a.key === s.key);
+    const after = (chain ? [prev.key] : listed).map((key) => ({ key, lagMin: 0 }));
     mapped.push({
       key: s.key,
       name: s.name?.trim() || s.key,

@@ -414,11 +414,11 @@ function pullAncestors(step: WStep, steps: WStep[], ctx: ScheduleCtx): void {
   }
 }
 
-function placeLateHands(steps: WStep[], ctx: ScheduleCtx, anchor: WStep | undefined): void {
+function placeLateHands(steps: WStep[], ctx: ScheduleCtx, anchor: WStep | undefined, skip: Set<string>): void {
   const carve = anchor
     ? steps.find((s) => s.dishId === anchor.dishId && s.hands >= 2 && s.kind === "prep" && isPlaced(s))
     : undefined;
-  const hands = steps.filter((s) => !s.pin && !isPlaced(s) && s.hands >= 2 && s.status !== "skipped" && s.kind !== "oven" && s.kind !== "check");
+  const hands = steps.filter((s) => !s.pin && !isPlaced(s) && !skip.has(s.dishId) && s.hands >= 2 && s.status !== "skipped" && s.kind !== "oven" && s.kind !== "check");
   for (const s of hands) {
     const cap = carve && carve.id !== s.id ? carve.start - HANDS_BREATHER_MIN : ctx.serveMin;
     s.end = cap;
@@ -437,6 +437,58 @@ function placeLateHands(steps: WStep[], ctx: ScheduleCtx, anchor: WStep | undefi
   }
 }
 
+/**
+ * Dishes with no oven step and no link to another dish. Nothing else decides when they cook,
+ * so they are placed backward from serve. A dish already under way only counts when running late;
+ * otherwise its remaining steps follow on from the finished ones.
+ */
+function standaloneDishes(steps: WStep[], ctx: ScheduleCtx): Set<string> {
+  const dishOf = new Map(steps.map((s) => [s.id, s.dishId]));
+  const out = new Set<string>();
+  const blocked = new Set<string>();
+  for (const s of steps) {
+    if (s.status === "skipped") continue;
+    out.add(s.dishId);
+    if (s.kind === "oven" || s.spanToServe || s.offsetOf || (s.pin && ctx.mode !== "late")) blocked.add(s.dishId);
+    for (const a of s.after) {
+      const other = dishOf.get(a.stepId);
+      if (other != null && other !== s.dishId) {
+        blocked.add(s.dishId);
+        blocked.add(other);
+      }
+    }
+  }
+  for (const id of blocked) out.delete(id);
+  return out;
+}
+
+/** Place one dish from its last step back toward now, each step as late as its successors allow. */
+function placeBackward(dishId: string, steps: WStep[], ctx: ScheduleCtx): void {
+  const own = steps.filter((s) => s.dishId === dishId && s.status !== "skipped");
+  const open = own.filter((s) => !s.pin);
+  for (const s of topo(open).reverse()) {
+    let end = ctx.serveMin;
+    for (const o of open) {
+      const link = o.after.find((a) => a.stepId === s.id);
+      if (link && isPlaced(o)) end = Math.min(end, o.start - link.lagMin);
+    }
+    const minStart = predMin(s, steps, ctx);
+    const start = pushEarlier(s, end - s.duration, minStart, steps, ctx);
+    if (start < minStart - 0.01 || !slotFree(s, start, steps, ctx)) {
+      for (const o of open) {
+        o.start = UNPLACED;
+        o.end = UNPLACED;
+      }
+      return;
+    }
+    s.start = start;
+    s.end = start + s.duration;
+    assignResource(s, steps, ctx);
+  }
+  const last = open.filter((s) => !own.some((o) => o.after.some((a) => a.stepId === s.id)));
+  for (const s of last) if (s.end < ctx.serveMin - 0.01) addHold(s, steps, ctx);
+}
+
 function clearUnpinned(steps: WStep[]): void {
   for (const s of steps) {
     if (s.pin || s.status === "skipped") continue;
@@ -448,6 +500,7 @@ function clearUnpinned(steps: WStep[]): void {
 /** Place every unpinned step. Returns false if the anchor chain cannot finish by serve. */
 export function placeAll(steps: WStep[], ctx: ScheduleCtx): boolean {
   clearUnpinned(steps);
+  const standalone = standaloneDishes(steps, ctx);
   const anchor = anchorOf(steps);
   if (anchor) {
     const chain = sameDishChain(anchor, steps).filter((s) => !s.pin);
@@ -463,8 +516,13 @@ export function placeAll(steps: WStep[], ctx: ScheduleCtx): boolean {
   const restOven = steps.filter((s) => s.kind === "oven" && !s.tempFlexible && !isPlaced(s) && s.status !== "skipped");
   for (const s of restOven) placeOwnOven(s, steps, ctx);
 
-  if (ctx.mode === "late") placeLateHands(steps, ctx, anchor);
+  if (ctx.mode === "late") placeLateHands(steps, ctx, anchor, standalone);
 
+  for (const s of topo(steps)) {
+    if (s.pin || isPlaced(s) || s.status === "skipped" || standalone.has(s.dishId)) continue;
+    placeLoose(s, steps, ctx, ctx.mode === "compact");
+  }
+  for (const dishId of standalone) placeBackward(dishId, steps, ctx);
   for (const s of topo(steps)) {
     if (s.pin || isPlaced(s) || s.status === "skipped") continue;
     placeLoose(s, steps, ctx, ctx.mode === "compact");
